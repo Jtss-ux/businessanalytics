@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Business Analytics | Customer Satisfaction Survey</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Pacifico&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- Loader -->
+  <div id="loading">
+    <canvas id="matrix-canvas"></canvas>
+    <span class="loading-text">Group-10</span>
+    <span class="standby-text">Loading Survey<span class="wavy-dots"><span>.</span><span>.</span><span>.</span></span></span>
+  </div>
+  
+  <!-- Hero -->
+  <div class="hero-bg">
+    <canvas class="matrix-overlay" id="matrixBg"></canvas>
+    <div class="hero-content">
+      <div class="hero-title">📊 Business Analytics Survey</div>
+      <div class="hero-type" id="typewriter"></div>
+      <p class="hero-subtitle">Help us understand customer satisfaction and purchase behavior in local cafés and retail businesses</p>
+      <div class="hero-roles">KC | NIRANJAN | VAISHAVI | JOSEPH | JOSHUA</div>
+    </div>
+  </div>
+
+  <div id="mainContentWithMetaballs">
+    <canvas id="metaballs-bg"></canvas>
+    <div class="main-container">
+      <div class="glass-card" id="surveyCard">
+        
+        <!-- Survey Header -->
+        <div class="survey-header">
+          <h2>🎯 Customer Satisfaction Survey</h2>
+          <p>Your feedback helps local businesses improve their services. This survey takes approximately 3-5 minutes. All responses are anonymous and used for academic research only.</p>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+          <div class="progress-info">
+            <span class="step-label" id="step-label">Step 1 of 7</span>
+            <span class="percent-label" id="percent-label">14%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-bar" id="progress-bar" style="width: 14%"></div>
+          </div>
+        </div>
+        
+        <form id="surveyForm">
+          
+          <!-- Tab 1: Basic Details -->
+          <div class="survey-tab active" id="tab-1">
+            <h3 class="section-title"><span class="section-icon">👤</span> Basic Information</h3>
+            <div class="form-group">
+              <label for="name">Full Name *</label>
+              <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address *</label>
+              <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+            </div>
+            <div class="form-group">
+              <label for="age">Age Group *</label>
+              <select id="age" name="age" required>
+                <option value="">Select your age group</option>
+                <option value="18-24">18-24 years</option>
+                <option value="25-34">25-34 years</option>
+                <option value="35-44">35-44 years</option>
+                <option value="45-54">45-54 years</option>
+                <option value="55+">55+ years</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="gender">Gender *</label>
+              <select id="gender" name="gender" required>
+                <option value="">Select your gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="visit_frequency">How often do you visit local cafés/retail stores? *</label>
+              <select id="visit_frequency" name="visit_frequency" required>
+                <option value="">Select frequency</option>
+                <option value="Daily">Daily</option>
+                <option value="Several times a week">Several times a week</option>
+                <option value="Once a week">Once a week</option>
+                <option value="Few times a month">Few times a month</option>
+                <option value="Rarely">Rarely</option>
+              </select>
+            </div>
+            <div class="nav-buttons">
+              <div></div>
+              <button type="button" class="nav-btn next" onclick="changeTab(1)">Next →</button>
+            </div>
+          </div>
+          
+          <!-- Tab 2: Section A - Service & Staff -->
+          <div class="survey-tab" id="tab-2">
+            <h3 class="section-title"><span class="section-icon">🧾</span> Section A: Service & Staff</h3>
+            <p class="section-desc">Rate each statement: 1 = Strongly Disagree, 5 = Strongly Agree</p>
+            <div class="likert-question"><p>1. The staff is polite and courteous while interacting with customers.</p><div class="likert-options" data-name="q1"></div></div>
+            <div class="likert-question"><p>2. Employees respond quickly to customer needs and requests.</p><div class="likert-options" data-name="q2"></div></div>
+            <div class="likert-question"><p>3. Staff members are knowledgeable about the products or services offered.</p><div class="likert-options" data-name="q3"></div></div>
+            <div class="likert-question"><p>4. I feel welcomed and valued as a customer in this place.</p><div class="likert-options" data-name="q4"></div></div>
+            <div class="nav-buttons">
+              <button type="button" class="nav-btn prev" onclick="changeTab(-1)">← Back</button>
+              <button type="button" class="nav-btn next" onclick="changeTab(1)">Next →</button>
+            </div>
+          </div>
+          
+          <!-- Tab 3: Section B - Ambience & Environment -->
+          <div class="survey-tab" id="tab-3">
+            <h3 class="section-title"><span class="section-icon">🏪</span> Section B: Ambience & Environment</h3>
+            <p class="section-desc">Rate each statement: 1 = Strongly Disagree, 5 = Strongly Agree</p>
+            <div class="likert-question"><p>5. The overall ambience of the café/store is comfortable and pleasant.</p><div class="likert-options" data-name="q5"></div></div>
+            <div class="likert-question"><p>6. Cleanliness and hygiene are well maintained at all times.</p><div class="likert-options" data-name="q6"></div></div>
+            <div class="likert-question"><p>7. The seating or shopping space is arranged in a convenient manner.</p><div class="likert-options" data-name="q7"></div></div>
+            <div class="likert-question"><p>8. The environment makes me feel relaxed and comfortable.</p><div class="likert-options" data-name="q8"></div></div>
+            <div class="nav-buttons">
+              <button type="button" class="nav-btn prev" onclick="changeTab(-1)">← Back</button>
+              <button type="button" class="nav-btn next" onclick="changeTab(1)">Next →</button>
+            </div>
+          </div>
+          
+          <!-- Tab 4: Section C - Time & Convenience -->
+          <div class="survey-tab" id="tab-4">
+            <h3 class="section-title"><span class="section-icon">⏱️</span> Section C: Time & Convenience</h3>
+            <p class="section-desc">Rate each statement: 1 = Strongly Disagree, 5 = Strongly Agree</p>
+            <div class="likert-question"><p>9. The waiting time for service or billing is reasonable.</p><div class="likert-options" data-name="q9"></div></div>
+            <div class="likert-question"><p>10. The service process is smooth and well organised.</p><div class="likert-options" data-name="q10"></div></div>
+            <div class="likert-question"><p>11. The business operates at timings that are convenient for me.</p><div class="likert-options" data-name="q11"></div></div>
+            <div class="nav-buttons">
+              <button type="button" class="nav-btn prev" onclick="changeTab(-1)">← Back</button>
+              <button type="button" class="nav-btn next" onclick="changeTab(1)">Next →</button>
+            </div>
+          </div>
+          
+          <!-- Tab 5: Section D - Pricing & Value -->
+          <div class="survey-tab" id="tab-5">
+            <h3 class="section-title"><span class="section-icon">💰</span> Section D: Pricing & Value</h3>
+            <p class="section-desc">Rate each statement: 1 = Strongly Disagree, 5 = Strongly Agree</p>
+            <div class="likert-question"><p>12. The prices charged are fair for the quality provided.</p><div class="likert-options" data-name="q12"></div></div>
+            <div class="likert-question"><p>13. I feel that I receive good value for the money I spend here.</p><div class="likert-options" data-name="q13"></div></div>
+            <div class="likert-question"><p>14. Discounts or offers, when available, are attractive and useful.</p><div class="likert-options" data-name="q14"></div></div>
+            <div class="nav-buttons">
+              <button type="button" class="nav-btn prev" onclick="changeTab(-1)">← Back</button>
+              <button type="button" class="nav-btn next" onclick="changeTab(1)">Next →</button>
+            </div>
+          </div>
+          
+          <!-- Tab 6: Section E - Overall Satisfaction -->
+          <div class="survey-tab" id="tab-6">
+            <h3 class="section-title"><span class="section-icon">⭐</span> Section E: Overall Satisfaction</h3>
+            <p class="section-desc">Rate each statement: 1 = Strongly Disagree, 5 = Strongly Agree</p>
+            <div class="likert-question"><p>15. I am satisfied with my overall experience at this café/store.</p><div class="likert-options" data-name="q15"></div></div>
+            <div class="likert-question"><p>16. The quality of products or services meets my expectations.</p><div class="likert-options" data-name="q16"></div></div>
+            <div class="likert-question"><p>17. This place performs better compared to similar businesses nearby.</p><div class="likert-options" data-name="q17"></div></div>
+            <div class="nav-buttons">
+              <button type="button" class="nav-btn prev" onclick="changeTab(-1)">← Back</button>
+              <button type="button" class="nav-btn next" onclick="changeTab(1)">Next →</button>
+            </div>
+          </div>
+          
+          <!-- Tab 7: Section F - Loyalty & Repeat Purchase -->
+          <div class="survey-tab" id="tab-7">
+            <h3 class="section-title"><span class="section-icon">🔁</span> Section F: Loyalty & Repeat Purchase</h3>
+            <p class="section-desc">Rate each statement: 1 = Strongly Disagree, 5 = Strongly Agree</p>
+            <div class="likert-question"><p>18. I intend to visit this café/store again in the future.</p><div class="likert-options" data-name="q18"></div></div>
+            <div class="likert-question"><p>19. I would recommend this café/store to friends and family.</p><div class="likert-options" data-name="q19"></div></div>
+            <div class="likert-question"><p>20. I prefer this café/store over other available alternatives.</p><div class="likert-options" data-name="q20"></div></div>
+            <div class="form-group" style="margin-top:25px;">
+              <label for="feedback">Additional Comments or Suggestions (Optional)</label>
+              <textarea id="feedback" name="feedback" rows="4" placeholder="Share any additional thoughts..."></textarea>
+            </div>
+            <div class="nav-buttons" style="flex-direction:column;gap:15px;">
+              <button type="button" class="nav-btn prev" onclick="changeTab(-1)" style="width:100%;">← Back</button>
+              <button type="submit" class="nav-btn submit" id="submitBtn"><span id="submitText">Submit Survey 🚀</span></button>
+            </div>
+          </div>
+          
+          <!-- Success Message -->
+          <div class="survey-tab" id="tab-success" style="display:none;">
+            <div class="success-message">
+              <div class="success-icon">🎉</div>
+              <h3>Thank You!</h3>
+              <p>Your response has been successfully recorded for our Business Analytics research project.</p>
+              <p style="margin-top:20px;color:#5ff9f5;">Data sent to:</p>
+              <ul style="text-align:left;color:#a2f7e2;max-width:300px;margin:15px auto;list-style:none;padding:0;">
+                <li>✅ Google Spreadsheet</li>
+                <li>✅ Supabase Database</li>
+                <li>✅ Email Notification</li>
+              </ul>
+              <button type="button" class="nav-btn next" onclick="location.reload()" style="margin-top:20px;">Take Another Survey</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      
+      <div class="footer-creative">
+        <div>Made with lots of love❤️ <span style="font-size:1.2em;">&amp;</span> caffeine☕</div>
+        <div id="footer-localtime"></div>
+        <div class="footer-links">
+          <a href="mailto:josephst2007@gmail.com">Email</a> |
+          <a href="tel:+918547722865">Phone</a> |
+          <a href="https://www.linkedin.com/in/joseph-stalin-04901a305/" target="_blank">LinkedIn</a> |
+          <a href="https://jtsvizee.in/" target="_blank">Website</a> |
+          <span class="dark-toggle" onclick="document.body.classList.toggle('dark-mode')">🌓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
